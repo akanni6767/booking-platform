@@ -1,0 +1,163 @@
+// components/invoices/InvoicePDF.ts
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+import { format } from "date-fns";
+
+export function generateInvoicePDF(invoice: any, business: any): jsPDF {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.width;
+  const pageHeight = doc.internal.pageSize.height;
+  
+  // Colors (RGB tuples for jsPDF spread args)
+  const primaryColor: [number, number, number] = [79, 70, 229]; // Indigo-600
+  const textColor: [number, number, number] = [31, 41, 55]; // Gray-800
+  const lightGray: [number, number, number] = [243, 244, 246]; // Gray-100
+  
+  // Header
+  doc.setFillColor(...primaryColor);
+  doc.rect(0, 0, pageWidth, 40, "F");
+  
+  // Business Name
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(24);
+  doc.setFont("helvetica", "bold");
+  doc.text(business.name, 20, 25);
+  
+  // Invoice Title
+  doc.setFontSize(32);
+  doc.text("INVOICE", pageWidth - 20, 25, { align: "right" });
+  
+  // Invoice Details Box
+  doc.setFillColor(255, 255, 255);
+  doc.setDrawColor(...primaryColor);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(20, 50, 80, 35, 3, 3, "FD");
+  
+  doc.setTextColor(...textColor);
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.text("Invoice Number:", 25, 60);
+  doc.text("Issue Date:", 25, 68);
+  doc.text("Due Date:", 25, 76);
+  doc.text("Status:", 25, 84);
+  
+  doc.setFont("helvetica", "bold");
+  doc.text(invoice.invoiceNumber, 60, 60);
+  doc.text(format(new Date(invoice.issueDate), "MMM dd, yyyy"), 60, 68);
+  doc.text(format(new Date(invoice.dueDate), "MMM dd, yyyy"), 60, 76);
+  
+  // Status with color
+  const statusColors: Record<string, [number, number, number]> = {
+    PAID: [16, 185, 129],
+    SENT: [59, 130, 246],
+    OVERDUE: [239, 68, 68],
+    DRAFT: [107, 114, 128],
+  };
+  const statusColor: [number, number, number] =
+    statusColors[invoice.status] ?? [107, 114, 128];
+  doc.setTextColor(...statusColor);
+  doc.text(invoice.status, 60, 84);
+  
+  // Bill To Section
+  doc.setTextColor(...textColor);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.text("BILL TO:", pageWidth - 20, 55, { align: "right" });
+  
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.text(invoice.clientName, pageWidth - 20, 62, { align: "right" });
+  if (invoice.clientEmail) {
+    doc.text(invoice.clientEmail, pageWidth - 20, 68, { align: "right" });
+  }
+  if (invoice.clientAddress) {
+    const addressLines = invoice.clientAddress.split("\n");
+    addressLines.forEach((line: string, i: number) => {
+      doc.text(line, pageWidth - 20, 74 + i * 6, { align: "right" });
+    });
+  }
+  
+  // Items Table
+  const tableData = invoice.items.map((item: any) => [
+    item.description,
+    item.quantity.toString(),
+    formatCurrency(Number(item.unitPrice), business.currency),
+    formatCurrency(Number(item.amount), business.currency),
+  ]);
+  
+  autoTable(doc, {
+    startY: 100,
+    head: [["Description", "Quantity", "Unit Price", "Amount"]],
+    body: tableData,
+    theme: "striped",
+    headStyles: {
+      fillColor: primaryColor,
+      textColor: 255,
+      fontStyle: "bold",
+    },
+    columnStyles: {
+      0: { cellWidth: "auto" },
+      1: { cellWidth: 30, halign: "center" },
+      2: { cellWidth: 40, halign: "right" },
+      3: { cellWidth: 40, halign: "right" },
+    },
+    styles: {
+      fontSize: 10,
+      cellPadding: 5,
+    },
+    alternateRowStyles: {
+      fillColor: lightGray,
+    },
+  });
+  
+  // Calculate totals
+  const finalY = (doc as any).lastAutoTable.finalY + 10;
+  
+  // Totals Box
+  const totalsX = pageWidth - 80;
+  doc.setFillColor(249, 250, 251);
+  doc.roundedRect(totalsX, finalY, 60, 45, 3, 3, "F");
+  
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.text("Subtotal:", totalsX + 5, finalY + 12);
+  doc.text("Tax:", totalsX + 5, finalY + 24);
+  doc.text("Total:", totalsX + 5, finalY + 38);
+  
+  doc.setFont("helvetica", "bold");
+  doc.text(formatCurrency(Number(invoice.subtotal), business.currency), totalsX + 55, finalY + 12, { align: "right" });
+  doc.text(formatCurrency(Number(invoice.taxAmount), business.currency), totalsX + 55, finalY + 24, { align: "right" });
+  
+  doc.setFontSize(14);
+  doc.setTextColor(...primaryColor);
+  doc.text(formatCurrency(Number(invoice.total), business.currency), totalsX + 55, finalY + 38, { align: "right" });
+  
+  // Notes
+  if (invoice.notes) {
+    doc.setTextColor(...textColor);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("Notes:", 20, finalY + 60);
+    doc.setFont("helvetica", "normal");
+    doc.text(invoice.notes, 20, finalY + 68);
+  }
+  
+  // Footer
+  const footerY = pageHeight - 20;
+  doc.setDrawColor(229, 231, 235);
+  doc.setLineWidth(0.5);
+  doc.line(20, footerY - 10, pageWidth - 20, footerY - 10);
+  
+  doc.setFontSize(9);
+  doc.setTextColor(156, 163, 175);
+  doc.text(`Generated by ${business.name}`, pageWidth / 2, footerY, { align: "center" });
+  
+  return doc;
+}
+
+function formatCurrency(amount: number, currency: string): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+  }).format(amount);
+}

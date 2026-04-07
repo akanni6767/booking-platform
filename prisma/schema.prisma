@@ -1,0 +1,210 @@
+// prisma/schema.prisma — bookkeeping + NextAuth (Auth.js adapter)
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ----- NextAuth / Auth.js (via @auth/prisma-adapter) -----
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  /// Credentials provider (bcrypt hash); null for OAuth-only users
+  password      String?
+
+  accounts Account[]
+  sessions Session[]
+
+  businesses Business[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ----- App domain -----
+
+model Business {
+  id        String @id @default(cuid())
+  userId    String
+  name      String
+  ownerName String
+  type      String
+  email     String
+  address   String?
+  currency  String  @default("USD")
+  logo      String?
+  vatRate   String?
+  taxNumber String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  categories        Category[]
+  transactions      Transaction[]
+  invoices          Invoice[]
+  recurringExpenses RecurringExpense[]
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+}
+
+model Category {
+  id         String       @id @default(cuid())
+  businessId String
+  name       String
+  type       CategoryType
+  color      String
+  isDefault  Boolean      @default(false)
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  transactions      Transaction[]
+  recurringExpenses RecurringExpense[]
+
+  @@unique([businessId, name, type])
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum PaymentMethod {
+  CASH
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  CHECK
+  DIGITAL_WALLET
+  OTHER
+}
+
+model Transaction {
+  id            String          @id @default(cuid())
+  businessId    String
+  categoryId    String
+  type          TransactionType
+  amount        Decimal         @db.Decimal(14, 2)
+  date          DateTime
+  description   String?
+  paymentMethod PaymentMethod
+
+  createdAt DateTime @default(now())
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  businessId    String
+  invoiceNumber String
+  clientName    String
+  clientEmail   String?
+  clientAddress String?       @db.Text
+  issueDate     DateTime
+  dueDate       DateTime
+  notes         String?       @db.Text
+  subtotal      Decimal       @db.Decimal(14, 2)
+  taxAmount     Decimal       @db.Decimal(14, 2)
+  total         Decimal       @db.Decimal(14, 2)
+  /// Amount paid toward this invoice (partial payments); unpaid balance is total - paidAmount
+  paidAmount    Decimal       @default(0) @db.Decimal(14, 2)
+  status        InvoiceStatus @default(DRAFT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  business Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  items    InvoiceItem[]
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  description String
+  quantity    Decimal @db.Decimal(12, 4)
+  unitPrice   Decimal @db.Decimal(14, 2)
+  amount      Decimal @db.Decimal(14, 2)
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+}
+
+enum RecurringFrequency {
+  DAILY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+model RecurringExpense {
+  id            String             @id @default(cuid())
+  businessId    String
+  categoryId    String
+  name          String
+  amount        Decimal            @db.Decimal(14, 2)
+  frequency     RecurringFrequency
+  startDate     DateTime
+  endDate       DateTime?
+  isActive      Boolean            @default(true)
+  lastGenerated DateTime?
+
+  createdAt DateTime @default(now())
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+}
