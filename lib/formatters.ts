@@ -4,7 +4,7 @@ export function formatCurrency(amount: number | bigint, currency: string = "USD"
     
     return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency,
+      currency: "NG",
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(numAmount);
