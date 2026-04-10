@@ -1,6 +1,7 @@
 // app/auth/login/page.tsx
 "use client";
 
+import { Suspense } from "react";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -9,7 +10,8 @@ import { Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
-export default function LoginPage() {
+// Component that uses useSearchParams
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
@@ -45,7 +47,7 @@ export default function LoginPage() {
         router.push(callbackUrl);
         router.refresh();
       }
-    } catch {
+    } catch (err) {
       setError("An unexpected error occurred");
       setIsLoading(false);
     }
@@ -176,5 +178,29 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading fallback
+function LoginSkeleton() {
+  return (
+    <div className="animate-pulse space-y-4">
+      <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mx-auto" />
+      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mx-auto" />
+      <div className="space-y-4 mt-8">
+        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded" />
+        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded" />
+        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded w-full" />
+      </div>
+    </div>
+  );
+}
+
+// Main page component with Suspense
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginSkeleton />}>
+      <LoginForm />
+    </Suspense>
   );
 }

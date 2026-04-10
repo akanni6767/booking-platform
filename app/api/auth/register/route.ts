@@ -2,12 +2,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import type { PrismaClient } from "@/lib/generated/prisma/client";
 
-// Define CategoryType enum manually since import might not work
+// Define CategoryType enum manually
 const CategoryType = {
   INCOME: "INCOME",
   EXPENSE: "EXPENSE",
 } as const;
+
+// Define the transaction client type
+type TransactionClient = Omit<
+  PrismaClient,
+  "$extends" | "$connect" | "$disconnect" | "$on" | "$use" | "$transaction"
+>;
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,7 +45,7 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user with business and default categories in a transaction
-    const user = await prisma.$transaction(async (tx) => {
+    const user = await prisma.$transaction(async (tx: TransactionClient) => {
       // Create user
       const newUser = await tx.user.create({
         data: {
