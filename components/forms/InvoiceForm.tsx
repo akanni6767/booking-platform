@@ -1,5 +1,5 @@
 // components/forms/InvoiceForm.tsx
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Plus, Trash2 } from "lucide-react";
@@ -21,6 +21,16 @@ interface InvoiceFormProps {
   isLoading: boolean;
 }
 
+interface InvoiceFormData {
+  clientName: string;
+  clientEmail: string;
+  clientAddress: string;
+  issueDate: string;
+  dueDate: string;
+  notes: string;
+  items: InvoiceItem[];
+}
+
 export function InvoiceForm({
   business,
   initialData,
@@ -28,34 +38,38 @@ export function InvoiceForm({
   onCancel,
   isLoading,
 }: InvoiceFormProps) {
-  const [formData, setFormData] = useState({
-    clientName: "",
-    clientEmail: "",
-    clientAddress: "",
-    issueDate: format(new Date(), "yyyy-MM-dd"),
-    dueDate: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), "yyyy-MM-dd"),
-    notes: "",
-    items: [{ description: "", quantity: 1, unitPrice: 0 }] as InvoiceItem[],
-  });
+  const createDefaultFormData = (): InvoiceFormData => {
+    const today = new Date();
+    const defaultDueDate = new Date(today);
+    defaultDueDate.setDate(defaultDueDate.getDate() + 30);
 
-  useEffect(() => {
-    if (initialData) {
-      setFormData({
-        clientName: initialData.clientName,
-        clientEmail: initialData.clientEmail || "",
-        clientAddress: initialData.clientAddress || "",
-        issueDate: format(new Date(initialData.issueDate), "yyyy-MM-dd"),
-        dueDate: format(new Date(initialData.dueDate), "yyyy-MM-dd"),
-        notes: initialData.notes || "",
-        items: initialData.items.map((item: any) => ({
-          id: item.id,
-          description: item.description,
-          quantity: item.quantity,
-          unitPrice: Number(item.unitPrice),
-        })),
-      });
-    }
-  }, [initialData]);
+    return initialData
+      ? {
+          clientName: initialData.clientName,
+          clientEmail: initialData.clientEmail || "",
+          clientAddress: initialData.clientAddress || "",
+          issueDate: format(new Date(initialData.issueDate), "yyyy-MM-dd"),
+          dueDate: format(new Date(initialData.dueDate), "yyyy-MM-dd"),
+          notes: initialData.notes || "",
+          items: initialData.items.map((item: any) => ({
+            id: item.id,
+            description: item.description,
+            quantity: item.quantity,
+            unitPrice: Number(item.unitPrice),
+          })),
+        }
+      : {
+      clientName: "",
+      clientEmail: "",
+      clientAddress: "",
+      issueDate: format(today, "yyyy-MM-dd"),
+      dueDate: format(defaultDueDate, "yyyy-MM-dd"),
+      notes: "",
+      items: [{ description: "", quantity: 1, unitPrice: 0 }] as InvoiceItem[],
+    };
+  };
+
+  const [formData, setFormData] = useState<InvoiceFormData>(createDefaultFormData);
 
   const addItem = () => {
     setFormData({
@@ -66,7 +80,7 @@ export function InvoiceForm({
 
   const removeItem = (index: number) => {
     if (formData.items.length === 1) return;
-    const newItems = formData.items.filter((_, i) => i !== index);
+    const newItems = formData.items.filter((_: InvoiceItem, i: number) => i !== index);
     setFormData({ ...formData, items: newItems });
   };
 
@@ -78,7 +92,7 @@ export function InvoiceForm({
 
   const calculateTotals = () => {
     const subtotal = formData.items.reduce(
-      (sum, item) => sum + item.quantity * item.unitPrice,
+      (sum: number, item: InvoiceItem) => sum + item.quantity * item.unitPrice,
       0
     );
     const taxRate = Number(business.vatRate) || 0;
@@ -156,7 +170,7 @@ export function InvoiceForm({
         </div>
 
         <div className="space-y-3">
-          {formData.items.map((item, index) => (
+          {formData.items.map((item: InvoiceItem, index: number) => (
             <div key={index} className="flex gap-3 items-start">
               <div className="flex-1">
                 <Input

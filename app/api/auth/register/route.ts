@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { CategoryType } from "@/lib/generated/prisma/enums";
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user with business and default categories in a transaction
-    const user = await prisma.$transaction(async (tx: typeof prisma) => {
+    const user = await prisma.$transaction(async (tx) => {
       // Create user
       const newUser = await tx.user.create({
         data: {
@@ -78,13 +79,13 @@ export async function POST(request: NextRequest) {
         data: [
           ...incomeCategories.map((cat) => ({
             ...cat,
-            type: "INCOME",
+            type: CategoryType.INCOME,
             businessId: business.id,
             isDefault: true,
           })),
           ...expenseCategories.map((cat) => ({
             ...cat,
-            type: "EXPENSE",
+            type: CategoryType.EXPENSE,
             businessId: business.id,
             isDefault: true,
           })),

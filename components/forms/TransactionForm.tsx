@@ -1,5 +1,5 @@
 // components/forms/TransactionForm.tsx
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { format } from "date-fns";
@@ -29,27 +29,25 @@ export function TransactionForm({
   onCancel,
   isLoading,
 }: TransactionFormProps) {
-  const [formData, setFormData] = useState({
-    type: "EXPENSE",
-    amount: "",
-    date: format(new Date(), "yyyy-MM-dd"),
-    categoryId: "",
-    description: "",
-    paymentMethod: "CASH",
-  });
-
-  useEffect(() => {
-    if (initialData) {
-      setFormData({
-        type: initialData.type,
-        amount: Number(initialData.amount).toString(),
-        date: format(new Date(initialData.date), "yyyy-MM-dd"),
-        categoryId: initialData.categoryId,
-        description: initialData.description || "",
-        paymentMethod: initialData.paymentMethod,
-      });
-    }
-  }, [initialData]);
+  const [formData, setFormData] = useState(() =>
+    initialData
+      ? {
+          type: initialData.type,
+          amount: Number(initialData.amount).toString(),
+          date: format(new Date(initialData.date), "yyyy-MM-dd"),
+          categoryId: initialData.categoryId,
+          description: initialData.description || "",
+          paymentMethod: initialData.paymentMethod,
+        }
+      : {
+          type: "EXPENSE",
+          amount: "",
+          date: format(new Date(), "yyyy-MM-dd"),
+          categoryId: "",
+          description: "",
+          paymentMethod: "CASH",
+        }
+  );
 
   const filteredCategories = categories.filter((c) => c.type === formData.type);
 

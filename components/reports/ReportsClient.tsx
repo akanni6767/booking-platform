@@ -96,21 +96,22 @@ export function ReportsClient({ initialData, business, startDate: initialStart, 
 
   // Cash Flow Data
   const cashFlowData = useMemo(() => {
-    let runningBalance = 0;
-    return initialData.cashFlowTransactions.map((t: any) => {
-      const amount = Number(t.amount);
-      if (t.type === "INCOME") {
-        runningBalance += amount;
-      } else {
-        runningBalance -= amount;
-      }
-      return {
-        date: formatDate(t.date),
-        income: t.type === "INCOME" ? amount : 0,
-        expense: t.type === "EXPENSE" ? amount : 0,
-        balance: runningBalance,
-      };
-    });
+    return initialData.cashFlowTransactions.reduce(
+      (acc: any[], t: any) => {
+        const amount = Number(t.amount);
+        const previousBalance = acc.length > 0 ? acc[acc.length - 1].balance : 0;
+        const balance = t.type === "INCOME" ? previousBalance + amount : previousBalance - amount;
+
+        acc.push({
+          date: formatDate(t.date),
+          income: t.type === "INCOME" ? amount : 0,
+          expense: t.type === "EXPENSE" ? amount : 0,
+          balance,
+        });
+        return acc;
+      },
+      []
+    );
   }, [initialData]);
 
   // Monthly Trend

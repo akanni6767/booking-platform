@@ -45,7 +45,7 @@ export default function LoginPage() {
         router.push(callbackUrl);
         router.refresh();
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
       setIsLoading(false);
     }
@@ -161,7 +161,7 @@ export default function LoginPage() {
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">
-                Don't have an account?
+                Don&apos;t have an account?
               </span>
             </div>
           </div>
