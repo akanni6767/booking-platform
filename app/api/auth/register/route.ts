@@ -2,7 +2,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { CategoryType } from "@/lib/generated/prisma/enums";
+
+// Define CategoryType enum manually since import might not work
+const CategoryType = {
+  INCOME: "INCOME",
+  EXPENSE: "EXPENSE",
+} as const;
 
 export async function POST(request: NextRequest) {
   try {
