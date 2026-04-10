@@ -72,6 +72,14 @@ export function SettingsClient({ business, initialCategories }: SettingsClientPr
     { code: "CAD", name: "Canadian Dollar (C$)", symbol: "C$" },
     { code: "AUD", name: "Australian Dollar (A$)", symbol: "A$" },
     { code: "INR", name: "Indian Rupee (₹)", symbol: "₹" },
+    { code: "NGN", name: "Nigerian Naira (₦)", symbol: "₦" },
+    { code: "ZAR", name: "South African Rand (R)", symbol: "R" },
+    { code: "KES", name: "Kenyan Shilling (KSh)", symbol: "KSh" },
+    { code: "TZS", name: "Tanzanian Shilling (TSh)", symbol: "TSh" },
+    { code: "UGX", name: "Ugandan Shilling (USh)", symbol: "USh" },
+    { code: "RWF", name: "Rwandan Franc (FRw)", symbol: "FRw" },
+    { code: "BIF", name: "Burundian Franc (FBu)", symbol: "FBu" },
+    { code: "ETB", name: "Ethiopian Birr (ETB)", symbol: "ETB" },
   ];
 
   const presetColors = [
