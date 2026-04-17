@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Premium – Table of Contents</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Sofia+Sans+Condensed:ital,wght@0,1..1000;1,1..1000&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <!-- 3. TABLE OF CONTENTS PAGE -->
+    <div class="pdf-page toc">
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        "
+      >
+        <h2
+          style="
+            font-size: 24pt;
+            font-weight: 700;
+            color: var(--white);
+            width: 160pt;
+          "
+        >
+          TABLE OF CONTENTS
+        </h2>
+
+        <div>
+          <p class="logo-pretext">Powered by</p>
+          <p class="logo">Morero</p>
+        </div>
+      </div>
+
+      <!-- CONTENT LIST — populated dynamically by the service -->
+      <div class="toc-header-line"></div>
+
+      <!--
+        The service will replace #toc-list entirely with a dynamically
+        generated <ul> whose items and page numbers reflect only the
+        sections that have data. Static fallback shown below.
+
+        Premium section order (fixed pages 01–03):
+          01 = Cover
+          02 = Info
+          03 = TOC
+        Then from page 04 onward, data sections are counted dynamically:
+          Project Summary          → always page 04
+          Risk Register            → if packData has riskRegister data
+          Programme Risk Analysis  → if packData has programmeRisk data (may span 2 pages)
+          Site Location & Access   → if google data present
+          Adjacent Land Use        → if google nearbyPlaces present
+          Heritage Assets          → if heritage data present
+          Geology & Soil Types     → if bgs-geology data present
+          Flooding Potential       → if flood data present
+          Ecological Receptors     → if ecological-receptors data present
+          Water Courses            → if water-courses data present
+          Mining Records           → if mining data present
+          Contaminated Land        → if contaminated-land data present
+          Pollution & Regulatory   → if pollution-risk data present
+          Mobile Coverage          → if ofcom-mobile data present
+          Broadband Coverage       → if ofcom-broadband data present
+          Data Quality             → always included
+          Upsell                   → always last
+      -->
+      <ul class="toc-list" id="toc-list">
+        <!--
+          Entries injected by populatePremiumTOC():
+          <li><span>Project Summary</span>          <span>04</span></li>
+          <li><span>Risk Register</span>             <span>05</span></li>
+          <li><span>Programme Risk Analysis</span>   <span>06</span></li>
+          <li><span>Site Location & Access</span>    <span>08</span></li>
+          <li><span>Adjacent Land Use</span>         <span>09</span></li>
+          <li><span>Heritage Assets</span>           <span>10</span></li>
+          <li><span>Geology & Soil Types</span>      <span>11</span></li>
+          <li><span>Flooding Potential</span>        <span>12</span></li>
+          <li><span>Ecological Receptors</span>      <span>13</span></li>
+          <li><span>Water Courses</span>             <span>14</span></li>
+          <li><span>Mining Records</span>            <span>15</span></li>
+          <li><span>Contaminated Land</span>         <span>16</span></li>
+          <li><span>Pollution & Regulatory</span>    <span>17</span></li>
+          <li><span>Mobile Coverage</span>           <span>18</span></li>
+          <li><span>Broadband Coverage</span>        <span>19</span></li>
+          <li><span>Data Quality</span>              <span>20</span></li>
+        -->
+      </ul>
+
+      <div class="toc-footer">
+        <p>
+          This document is automatically generated. Professional verification is
+          required before use in decision-making.
+        </p>
+        <div class="toc-line"></div>
+      </div>
+    </div>
+  </body>
+</html>

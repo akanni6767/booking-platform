@@ -63,7 +63,7 @@ export function Modal({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75 transition-opacity backdrop-blur-sm"
+        className="fixed inset-0 bg-gray-500 bg-opacity-75 dark:bg-gray-900/40 dark:bg-opacity-75 transition-opacity backdrop-blur-sm"
         onClick={onClose}
       />
 

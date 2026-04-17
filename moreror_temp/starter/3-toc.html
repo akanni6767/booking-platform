@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Starter – Table of Contents</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Sofia+Sans+Condensed:ital,wght@0,1..1000;1,1..1000&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <!-- 3. TABLE OF CONTENTS PAGE -->
+    <div class="pdf-page toc">
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+        "
+      >
+        <h2
+          style="
+            font-size: 24pt;
+            font-weight: 700;
+            color: var(--white);
+            width: 160pt;
+          "
+        >
+          TABLE OF CONTENTS
+        </h2>
+
+        <div>
+          <p class="logo-pretext">Powered by</p>
+          <p class="logo">Morero</p>
+        </div>
+      </div>
+
+      <!-- CONTENT LIST — populated dynamically by the service -->
+      <div class="toc-header-line"></div>
+
+      <!--
+        The service will replace #toc-list entirely with a dynamically
+        generated <ul> whose items and page numbers reflect only the
+        sections that have data. Static fallback shown below.
+      -->
+      <ul class="toc-list" id="toc-list">
+        <!--
+          Entries injected by populateStarterTOC():
+          <li><span>Project Summary</span>     <span>04</span></li>
+          <li><span>Site Location & Access</span> <span>05</span></li>
+          <li><span>Adjacent Land Use</span>   <span>06</span></li>
+          <li><span>Mobile Coverage</span>     <span>07</span></li>
+          <li><span>Broadband Coverage</span>  <span>08</span></li>
+          <li><span>Heritage Assets</span>     <span>09</span></li>
+          <li><span>Ecology & Soil Types</span><span>10</span></li>
+          <li><span>Flooding Potential</span>  <span>11</span></li>
+          <li><span>Ecological Receptors</span><span>12</span></li>
+          <li><span>Data Quality</span>        <span>13</span></li>
+        -->
+      </ul>
+
+      <div class="toc-footer">
+        <p>
+          This document is automatically generated. Professional verification is
+          required before use in decision-making.
+        </p>
+        <div class="toc-line"></div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Premium – Cover Page</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Sofia+Sans+Condensed:ital,wght@0,1..1000;1,1..1000&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <!-- 1. COVER PAGE -->
+    <div class="pdf-page cover-page">
+      <h1>
+        <span class="cover-text1">PREMIUM</span><br />
+        <span class="cover-text2">PROJECT PACK</span><br />
+        <span class="cover-text3">INFORMATION</span>
+      </h1>
+
+      <hr style="margin-block: 33pt" />
+
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 20pt;
+        "
+      >
+        <!-- LEFT IMAGE -->
+        <div
+          style="
+            background: var(--primary);
+            padding: 0 0 0pt 20pt;
+            border-radius: 8pt;
+            height: 350pt;
+            overflow: hidden;
+          "
+        >
+          <img
+            src="cover.png"
+            alt="cover"
+            style="
+              height: 92%;
+              width: 100%;
+              border-radius: 6pt;
+              object-fit: cover;
+            "
+          />
+          <p
+            style="
+              color: var(--white);
+              padding-top: 3pt;
+              font-size: 8pt;
+              text-align: center;
+              font-weight: 500;
+            "
+          >
+            Featured Image by Adrian Cuj, Axel Towers, Denmark
+          </p>
+        </div>
+        <!-- RIGHT INFO -->
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 350pt;
+          "
+        >
+          <div
+            style="
+              background: var(--white);
+              padding: 20pt;
+              border-radius: 8pt;
+              display: flex;
+              flex-direction: column;
+              gap: 20pt;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 5pt">
+              <span style="font-size: 12pt; font-weight: 300">Prepared on</span>
+              <p id="prepared-on" style="font-size: 16pt; font-weight: 700">16 February 2035</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 5pt">
+              <span style="font-size: 12pt; font-weight: 300"
+                >Commissioned by</span
+              >
+              <p id="commissioned-by" style="font-size: 16pt; font-weight: 700">Client Name Here</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 5pt">
+              <span style="font-size: 12pt; font-weight: 300"
+                >Prepared for</span
+              >
+              <p id="prepared-for" style="font-size: 16pt; font-weight: 700">
+                Project Name, Address
+              </p>
+            </div>
+          </div>
+
+          <div style="text-align: center">
+            <p class="logo-pretext">Powered by</p>
+            <p class="logo">Morero</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

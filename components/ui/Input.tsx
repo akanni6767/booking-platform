@@ -29,10 +29,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             className={cn(
-              "block w-full rounded-md shadow-sm sm:text-sm",
+              "block w-full rounded-md shadow-sm sm:text-sm py-2 px-3",
               "border-gray-300 dark:border-gray-600",
               "focus:border-indigo-500 focus:ring-indigo-500",
-              "dark:bg-gray-800 dark:text-white dark:placeholder-gray-400",
+              "dark:bg-gray-700/20 dark:text-white dark:placeholder-gray-400",
               "disabled:bg-gray-100 dark:disabled:bg-gray-900 disabled:cursor-not-allowed",
               leftIcon && "pl-10",
               rightIcon && "pr-10",
