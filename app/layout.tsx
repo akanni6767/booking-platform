@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Providers } from "./providers";
+import { GoogleTagManager } from "@next/third-parties/google";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100`}>
+        <GoogleTagManager gtmId="GTM-N6MFQXQ3" />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

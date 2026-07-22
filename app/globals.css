@@ -1,6 +1,9 @@
 /* app/globals.css */
 @import "tailwindcss";
 
+/* next-themes toggles `class="dark"` on <html>; Tailwind v4 defaults to prefers-color-scheme only. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source "../node_modules/react-tailwindcss-datepicker/dist/index.esm.js";
 
 @theme {
