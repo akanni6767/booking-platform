@@ -78,7 +78,7 @@ function LoginForm() {
           </div>
         )}
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form id="login-form" className="space-y-6" onSubmit={handleSubmit}>
           <Input
             label="Email address"
             id="email"
